@@ -3,19 +3,19 @@ import md5 from "md5";
 import moment from "moment";
 
 export const DataContext = createContext();
-
-const PASSWORD = "Valantis";
 const URL = "http://api.valantis.store:40000/";
+const PASSWORD = import.meta.env.VITE_PASSWORD;
 
 function Provider({ children }) {
+  const [page, setPage] = useState(1);
+  const [allData, setAllData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const getToday = moment(new Date()).format("YYYYMMDD");
   const AUTH = md5(PASSWORD + "_" + getToday);
-
-  const [page, setPage] = useState(1);
-
-  const [allData, SetAllData] = useState();
-
   const getData = async (currentPage = 1) => {
+    setLoading(true);
+    setError(false);
     try {
       const resIds = await fetch(URL, {
         method: "POST",
@@ -43,13 +43,35 @@ function Provider({ children }) {
         }),
       });
       const productsData = await resItems.json();
-      SetAllData(productsData.result);
-    } catch (error) {
-      console.log(error);
+      setAllData(productsData.result);
+    } catch (err) {
+      alert(err);
+      setError(true);
     }
+    setLoading(false);
   };
 
-  const value = { getData, allData, SetAllData, AUTH, getToday, setPage, page };
+  const sortedByMinToMax = allData?.slice().sort((a, b) => a.price - b.price);
+  const sortedByMaxToMin = allData?.slice().sort((a, b) => b.price - a.price);
+
+  const value = {
+    getData,
+
+
+    
+    allData,
+    setAllData,
+    AUTH,
+    getToday,
+    setPage,
+    page,
+    loading,
+    setLoading,
+    error,
+    setError,
+    sortedByMinToMax,
+    sortedByMaxToMin,
+  };
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 

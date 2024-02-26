@@ -1,0 +1,23 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.App {
+  display: flex;
+}
+
+.sort {
+  background-color: gray;
+  max-width: 500px;
+
+  &__table {
+    background-color: aqua;
+    display: flex;
+    flex-direction: column;
+
+    color: rebeccapurple;
+  }
+}
