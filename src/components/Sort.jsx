@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { DataContext } from "../context/DataContext";
 
 function Sort() {
-  const { brandNames, setUserBrand } = useContext(DataContext);
+  const { allBrandNames } = useContext(DataContext);
   const [indexBrand, setIndexBrand] = useState(10);
 
   const handleShowMoreBrand = () => {
@@ -11,7 +11,7 @@ function Sort() {
   };
 
   const handleUserBrand = (e) => {
-    setUserBrand(e.target.id);
+    console.log(e.target.id);
   };
 
   return (
@@ -22,7 +22,7 @@ function Sort() {
         <div className="sort__brand">
           <button onClick={handleShowMoreBrand}>Show More {indexBrand}</button>
           <legend>Brand Name</legend>
-          {brandNames.map((brand, indexBrand) => {
+          {allBrandNames.map((brand, indexBrand) => {
             return (
               <span key={indexBrand} className="choice">
                 {indexBrand}

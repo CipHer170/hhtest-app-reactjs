@@ -11,18 +11,12 @@ function Provider({ children }) {
   const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const getToday = moment(new Date()).format("YYYYMMDD");
-  const AUTH = md5(PASSWORD + "_" + getToday);
-  const [brandNames, setBrandNames] = useState([]);
-  const [prices, setPrices] = useState([]);
-
-  // user choice states
-  const [userBrand, setUserBrand] = useState([]);
-  const [userFields, setUserFields] = useState([]);
-
-  const [sortedData, setSorrtedData] = useState([]);
+  const [allBrandNames, setAllBrandNames] = useState([]);
+  const [allPrices, setAllPrices] = useState([]);
 
   // get whole data
+  const getToday = moment(new Date()).format("YYYYMMDD");
+  const AUTH = md5(PASSWORD + "_" + getToday);
   const getData = async (currentPage = 1) => {
     setLoading(true);
     setError(false);
@@ -61,8 +55,8 @@ function Provider({ children }) {
     setLoading(false);
   };
 
-  // get  filtered data
-  const getDataByField = async (value, setData) => {
+  // get sorted brand from list of brands
+  const getDataByField = async (fieldName, setData) => {
     try {
       const resFields = await fetch(URL, {
         method: "POST",
@@ -72,7 +66,7 @@ function Provider({ children }) {
         },
         body: JSON.stringify({
           action: "get_fields",
-          params: { field: value },
+          params: { field: fieldName },
         }),
       });
       const productsData = await resFields?.json();
@@ -85,13 +79,36 @@ function Provider({ children }) {
     }
   };
 
-  useEffect(() => {
-    getDataByField("brand", setBrandNames);
-    getDataByField("price", setPrices);
-  }, []);
+  //get filtered data accordint to user choice
 
-  const sortedByMinToMax = allData?.slice().sort((a, b) => a.price - b.price);
-  const sortedByMaxToMin = allData?.slice().sort((a, b) => b.price - a.price);
+  const getUserFilteredData = async (fieldName, userChoice) => {
+    try {
+      const resFilter = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth": AUTH,
+        },
+        body: JSON.stringify({
+          action: "filter",
+          params: { brand: userChoice },
+        }),
+      });
+      const filtered = resFilter?.result.json();
+      console.log(filtered);
+      setAllData(filtered);
+      console.log(allData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    // this two cares fieldName, setData
+    getDataByField("brand", setAllBrandNames);
+    getDataByField("price", setAllPrices);
+    //
+  }, []);
 
   const value = {
     getData,
@@ -105,19 +122,15 @@ function Provider({ children }) {
     setLoading,
     error,
     setError,
-    sortedByMinToMax,
-    sortedByMaxToMin,
     getDataByField,
-    userBrand,
-    setUserBrand,
-    userFields,
-    setUserFields,
-    brandNames,
-    prices,
-    sortedData,
-    setSorrtedData,
+    allBrandNames,
+    allPrices,
+    getUserFilteredData,
   };
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 
 export default Provider;
+
+// const sortedByMinToMax = allData?.slice().sort((a, b) => a.price - b.price);
+// const sortedByMaxToMin = allData?.slice().sort((a, b) => b.price - a.price);
