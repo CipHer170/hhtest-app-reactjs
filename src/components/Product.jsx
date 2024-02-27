@@ -2,7 +2,7 @@ import "./Product.scss";
 
 function Product({ items }) {
   return (
-    <dv className="product">
+    <div className="product">
       <div className="product__container">
         <span>
           <h4>{items?.id}</h4>
@@ -11,7 +11,7 @@ function Product({ items }) {
         <h2>{items?.product}</h2>
         <h2>{items?.price}</h2>
       </div>
-    </dv>
+    </div>
   );
 }
 

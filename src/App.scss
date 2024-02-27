@@ -20,4 +20,11 @@
 
     color: rebeccapurple;
   }
+  &__brandname {
+    display: flex;
+    flex-direction: column;
+  }
+  .choice {
+    display: flex;
+  }
 }

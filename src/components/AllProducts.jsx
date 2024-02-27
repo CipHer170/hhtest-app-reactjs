@@ -3,10 +3,12 @@ import { DataContext } from "../context/DataContext";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./Product.scss";
 import Loading from "./Loading";
+import Product from "./Product";
 // import Product from "./Product";
 
 function AllProducts() {
-  const { setPage, page, getData, error, loading } = useContext(DataContext);
+  const { setPage, page, getData, error, loading, allData } =
+    useContext(DataContext);
 
   const handleBack = () => {
     if (page != 1) {
@@ -25,9 +27,9 @@ function AllProducts() {
 
       {error && <div>Error</div>}
       {loading && <Loading />}
-      {/* {allData?.map((item, index) => (
+      {allData?.map((item, index) => (
         <Product items={item} key={index} />
-      ))} */}
+      ))}
       <button onClick={handleBack}>
         <FaChevronLeft />
       </button>
