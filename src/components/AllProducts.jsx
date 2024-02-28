@@ -7,8 +7,16 @@ import Product from "./Product";
 // import Product from "./Product";
 
 function AllProducts() {
-  const { setPage, page, getData, error, loading, allData } =
-    useContext(DataContext);
+  const {
+    setPage,
+    page,
+    getData,
+    error,
+    loading,
+    allData,
+    filteredData,
+    isFilter,
+  } = useContext(DataContext);
 
   const handleBack = () => {
     if (page != 1) {
@@ -21,15 +29,25 @@ function AllProducts() {
     setPage((p) => p + 1);
   };
 
+  {
+    isFilter;
+  }
+
   return (
     <div className="allproducts">
-      <h1>Show just 50 ({page}) items per page</h1>
-
+      <h2>Show just 50 ({page}) items per page</h2>
       {error && <div>Error</div>}
       {loading && <Loading />}
-      {allData?.map((item, index) => (
+
+      {isFilter
+        ? filteredData?.map((items, index) => (
+            <Product items={items} key={index} />
+          ))
+        : allData?.map((item, index) => <Product items={item} key={index} />)}
+
+      {/* {allData?.map((item, index) => (
         <Product items={item} key={index} />
-      ))}
+      ))} */}
       <button onClick={handleBack}>
         <FaChevronLeft />
       </button>
@@ -41,3 +59,11 @@ function AllProducts() {
 }
 
 export default AllProducts;
+
+{
+  /* {!isFilter
+        ? allData?.map((item, index) => <Product items={item} key={index} />)
+        : filteredData?.map((item, index) => (
+            <Product items={item} key={index} />
+          ))} */
+}

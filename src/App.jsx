@@ -5,7 +5,7 @@ import { DataContext } from "./context/DataContext";
 import Sort from "./components/Sort";
 
 function App() {
-  const { getData, setLoading, allData } = useContext(DataContext);
+  const { getData, setLoading } = useContext(DataContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,13 +18,13 @@ function App() {
     };
 
     fetchData();
-  }, [allData]);
+  }, []);
 
   return (
-    <>
+    <div className="App">
       <Sort />
       <AllProducts />
-    </>
+    </div>
   );
 }
 

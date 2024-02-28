@@ -1,42 +1,35 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { DataContext } from "../context/DataContext";
 
 function Sort() {
-  const { allBrandNames } = useContext(DataContext);
-  const [indexBrand, setIndexBrand] = useState(10);
+  const { getUserFilteredData, allBrandNames } = useContext(DataContext);
 
-  const handleShowMoreBrand = () => {
-    setIndexBrand((prevIndexBrand) => prevIndexBrand + 1);
-    console.log(indexBrand, "indexbrand");
-  };
-
-  const handleUserBrand = (e) => {
-    console.log(e.target.id);
+  const handleUserBrand = (brand) => {
+    getUserFilteredData(brand);
   };
 
   return (
     <div style={{ display: "flex" }}>
       <div className="sort">
-        Filters
+        Filter by brand
         {/* brand name */}
         <div className="sort__brand">
-          <button onClick={handleShowMoreBrand}>Show More {indexBrand}</button>
-          <legend>Brand Name</legend>
+          <input type="number" id="price" placeholder="Enter brand name" />
+
           {allBrandNames.map((brand, indexBrand) => {
             return (
               <span key={indexBrand} className="choice">
-                {indexBrand}
+                {indexBrand + 1}
                 <input
                   type="checkbox"
                   id={brand}
                   name="scales"
-                  onClick={() => handleUserBrand}
+                  onClick={() => handleUserBrand(brand)}
                 />
                 <label htmlFor={brand}>{brand}</label>
               </span>
             );
           })}
-          <input type="number" id="price" placeholder="Enter price" />
         </div>
       </div>
     </div>
@@ -44,6 +37,12 @@ function Sort() {
 }
 
 export default Sort;
+
+// const [indexBrand, setIndexBrand] = useState(10);
+// const handleShowMoreBrand = () => {
+//   setIndexBrand((prevIndexBrand) => prevIndexBrand + 1);
+//   console.log(indexBrand, "indexbrand");
+// };
 
 // <div className="sort__price">
 // Filters

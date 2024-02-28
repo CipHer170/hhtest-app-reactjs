@@ -13,6 +13,8 @@ function Provider({ children }) {
   const [error, setError] = useState(false);
   const [allBrandNames, setAllBrandNames] = useState([]);
   const [allPrices, setAllPrices] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [isFilter, setIsFilter] = useState(true);
 
   // get whole data
   const getToday = moment(new Date()).format("YYYYMMDD");
@@ -81,7 +83,8 @@ function Provider({ children }) {
 
   //get filtered data accordint to user choice
 
-  const getUserFilteredData = async (fieldName, userChoice) => {
+  const getUserFilteredData = async (userChoice) => {
+    console.log("isFilter_1", isFilter);
     try {
       const resFilter = await fetch(URL, {
         method: "POST",
@@ -94,10 +97,30 @@ function Provider({ children }) {
           params: { brand: userChoice },
         }),
       });
-      const filtered = resFilter?.result.json();
-      console.log(filtered);
-      setAllData(filtered);
-      console.log(allData);
+      const filtered = await resFilter?.json(); // возращает id
+
+      const filteredIds = filtered?.result;
+
+      // чтобы получить все элементы по фильтру которого мы получаем от клиента, нужно отправть еще один запрос в API с данными по filtered, и получить все ответы от API с id(filtered)
+
+      if (filteredIds) {
+        const resItems = await fetch(URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Auth": AUTH,
+          },
+          body: JSON.stringify({
+            action: "get_items",
+            params: { ids: filtered?.result },
+          }),
+        });
+        const itemsData = await resItems?.json();
+        setIsFilter(true);
+        console.log(itemsData);
+        setFilteredData(itemsData?.result || []);
+      }
+      // setIsFilter(true);
     } catch (err) {
       console.log(err);
     }
@@ -126,6 +149,10 @@ function Provider({ children }) {
     allBrandNames,
     allPrices,
     getUserFilteredData,
+    filteredData,
+    setFilteredData,
+    isFilter,
+    setIsFilter,
   };
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
