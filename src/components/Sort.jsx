@@ -2,10 +2,28 @@ import { useContext } from "react";
 import { DataContext } from "../context/DataContext";
 
 function Sort() {
-  const { getUserFilteredData, allBrandNames } = useContext(DataContext);
+  const { getUserFilteredData, allBrandNames, setIsFilter, allPrices } =
+    useContext(DataContext);
 
-  const handleUserBrand = (brand) => {
-    getUserFilteredData(brand);
+  const handleUserBrand = (e, userChoice) => {
+    if (e.target.checked) {
+      const userChoices = { brand: userChoice };
+      getUserFilteredData(userChoices);
+      setIsFilter(true);
+    } else {
+      setIsFilter(false);
+    }
+  };
+
+  const handleUserPrice = (e, userChoice) => {
+    if (e.target.checked) {
+      setIsFilter(true);
+      const userChoices = { price: userChoice };
+      getUserFilteredData(userChoices);
+      getUserFilteredData(userChoices);
+    } else {
+      setIsFilter(false);
+    }
   };
 
   return (
@@ -14,19 +32,37 @@ function Sort() {
         Filter by brand
         {/* brand name */}
         <div className="sort__brand">
-          <input type="number" id="price" placeholder="Enter brand name" />
+          <input type="number" id="brand" placeholder="Enter brand name" />
 
           {allBrandNames.map((brand, indexBrand) => {
             return (
               <span key={indexBrand} className="choice">
                 {indexBrand + 1}
                 <input
-                  type="checkbox"
+                  type="radio"
                   id={brand}
                   name="scales"
-                  onClick={() => handleUserBrand(brand)}
+                  onClick={(e) => handleUserBrand(e, brand)}
                 />
                 <label htmlFor={brand}>{brand}</label>
+              </span>
+            );
+          })}
+        </div>
+        {/* price */}
+        <div className="sort__brand">
+          <input type="number" id="price" placeholder="Enter brand name" />
+
+          {allPrices.map((price, indexPrice) => {
+            return (
+              <span key={indexPrice} className="choice">
+                {indexPrice + 1}
+                <input
+                  type="checkbox"
+                  id={price}
+                  onClick={(e) => handleUserPrice(e, price)}
+                />
+                <label htmlFor={price}>{price}</label>
               </span>
             );
           })}

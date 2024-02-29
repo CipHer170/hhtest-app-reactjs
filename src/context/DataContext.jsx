@@ -14,7 +14,8 @@ function Provider({ children }) {
   const [allBrandNames, setAllBrandNames] = useState([]);
   const [allPrices, setAllPrices] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [isFilter, setIsFilter] = useState(true);
+  const [isFilter, setIsFilter] = useState(false);
+  // const [userChoice, setUserChoice] = useState([]);
 
   // get whole data
   const getToday = moment(new Date()).format("YYYYMMDD");
@@ -72,10 +73,10 @@ function Provider({ children }) {
         }),
       });
       const productsData = await resFields?.json();
-      const filteredBrands = [
+      const filteredFields = [
         ...new Set((productsData?.result ?? [])?.filter((i) => i)),
       ];
-      setData(filteredBrands);
+      setData(filteredFields);
     } catch (err) {
       console.log(err);
     }
@@ -84,7 +85,6 @@ function Provider({ children }) {
   //get filtered data accordint to user choice
 
   const getUserFilteredData = async (userChoice) => {
-    console.log("isFilter_1", isFilter);
     try {
       const resFilter = await fetch(URL, {
         method: "POST",
@@ -94,7 +94,7 @@ function Provider({ children }) {
         },
         body: JSON.stringify({
           action: "filter",
-          params: { brand: userChoice },
+          params: userChoice,
         }),
       });
       const filtered = await resFilter?.json(); // возращает id
@@ -116,13 +116,11 @@ function Provider({ children }) {
           }),
         });
         const itemsData = await resItems?.json();
-        setIsFilter(true);
-        console.log(itemsData);
         setFilteredData(itemsData?.result || []);
       }
-      // setIsFilter(true);
     } catch (err) {
       console.log(err);
+      alert(err);
     }
   };
 
@@ -130,8 +128,24 @@ function Provider({ children }) {
     // this two cares fieldName, setData
     getDataByField("brand", setAllBrandNames);
     getDataByField("price", setAllPrices);
+
     //
   }, []);
+
+  const sortedByMinToMax = () => {
+    const data = isFilter
+      ? filteredData?.slice().sort((a, b) => a.price - b.price)
+      : allData?.slice().sort((a, b) => a.price - b.price);
+
+    isFilter ? setFilteredData(data) : setAllData(data);
+  };
+
+  const sortedByMaxToMin = () => {
+    const data = isFilter
+      ? filteredData?.slice().sort((a, b) => b.price - a.price)
+      : allData?.slice().sort((a, b) => b.price - a.price);
+    isFilter ? setFilteredData(data) : setAllData(data);
+  };
 
   const value = {
     getData,
@@ -153,11 +167,10 @@ function Provider({ children }) {
     setFilteredData,
     isFilter,
     setIsFilter,
+    sortedByMaxToMin,
+    sortedByMinToMax,
   };
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 
 export default Provider;
-
-// const sortedByMinToMax = allData?.slice().sort((a, b) => a.price - b.price);
-// const sortedByMaxToMin = allData?.slice().sort((a, b) => b.price - a.price);

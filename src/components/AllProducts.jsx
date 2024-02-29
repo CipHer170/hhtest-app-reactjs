@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { DataContext } from "../context/DataContext";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./Product.scss";
-import Loading from "./Loading";
 import Product from "./Product";
 // import Product from "./Product";
 
@@ -11,11 +10,11 @@ function AllProducts() {
     setPage,
     page,
     getData,
-    error,
-    loading,
     allData,
     filteredData,
     isFilter,
+    sortedByMinToMax,
+    sortedByMaxToMin,
   } = useContext(DataContext);
 
   const handleBack = () => {
@@ -29,16 +28,12 @@ function AllProducts() {
     setPage((p) => p + 1);
   };
 
-  {
-    isFilter;
-  }
-
   return (
     <div className="allproducts">
-      <h2>Show just 50 ({page}) items per page</h2>
-      {error && <div>Error</div>}
-      {loading && <Loading />}
-
+      <button type="button" onClick={sortedByMinToMax}>
+        Min TO mAX
+      </button>
+      <button onClick={sortedByMaxToMin}>mAX TO Min</button>
       {isFilter
         ? filteredData?.map((items, index) => (
             <Product items={items} key={index} />
@@ -59,11 +54,3 @@ function AllProducts() {
 }
 
 export default AllProducts;
-
-{
-  /* {!isFilter
-        ? allData?.map((item, index) => <Product items={item} key={index} />)
-        : filteredData?.map((item, index) => (
-            <Product items={item} key={index} />
-          ))} */
-}

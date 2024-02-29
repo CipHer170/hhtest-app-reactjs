@@ -3,9 +3,10 @@ import "./App.scss";
 import AllProducts from "./components/AllProducts";
 import { DataContext } from "./context/DataContext";
 import Sort from "./components/Sort";
+import Loading from "./components/Loading";
 
 function App() {
-  const { getData, setLoading } = useContext(DataContext);
+  const { getData, setLoading, error, loading } = useContext(DataContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,8 +23,13 @@ function App() {
 
   return (
     <div className="App">
-      <Sort />
-      <AllProducts />
+      <h2>Show just 50 items per page</h2>
+      {error && <div>Error</div>}
+      {loading && <Loading />}
+      <div className="data">
+        <Sort />
+        <AllProducts />
+      </div>
     </div>
   );
 }
