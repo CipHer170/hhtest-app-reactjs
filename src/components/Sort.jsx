@@ -1,14 +1,16 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DataContext } from "../context/DataContext";
 
 function Sort() {
   const { getUserFilteredData, allBrandNames, setIsFilter, allPrices } =
     useContext(DataContext);
+  const [clearFilter, setClearFilter] = useState(false);
 
   const handleUserBrand = (e, userChoice) => {
     if (e.target.checked) {
       const userChoices = { brand: userChoice };
       getUserFilteredData(userChoices);
+      setClearFilter(false);
       setIsFilter(true);
     } else {
       setIsFilter(false);
@@ -18,6 +20,7 @@ function Sort() {
   const handleUserPrice = (e, userChoice) => {
     if (e.target.checked) {
       setIsFilter(true);
+      setClearFilter(false);
       const userChoices = { price: userChoice };
       getUserFilteredData(userChoices);
       getUserFilteredData(userChoices);
@@ -28,6 +31,9 @@ function Sort() {
 
   return (
     <div style={{ display: "flex" }}>
+      <button type="button" onClick={() => setClearFilter(true)}>
+        clear filter
+      </button>
       <div className="sort">
         Filter by brand
         {/* brand name */}
@@ -50,7 +56,7 @@ function Sort() {
           })}
         </div>
         {/* price */}
-        <div className="sort__brand">
+        {/* <div className="sort__brand">
           <input type="number" id="price" placeholder="Enter brand name" />
 
           {allPrices.map((price, indexPrice) => {
@@ -66,7 +72,7 @@ function Sort() {
               </span>
             );
           })}
-        </div>
+        </div> */}
       </div>
     </div>
   );
