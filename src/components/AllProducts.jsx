@@ -40,9 +40,6 @@ function AllProducts() {
           ))
         : allData?.map((item, index) => <Product items={item} key={index} />)}
 
-      {/* {allData?.map((item, index) => (
-        <Product items={item} key={index} />
-      ))} */}
       <button onClick={handleBack}>
         <FaChevronLeft />
       </button>

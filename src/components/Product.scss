@@ -10,9 +10,22 @@ h4 {
 // }
 
 .product {
+  width: 100%;
+  border-bottom: 1px solid gray;
   &__container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+  &__brand {
+    width: 20%;
+  }
+  &__name {
+    width: 70%;
+    text-align: left;
+    color: purple;
+  }
+  &__price {
+    width: 10%;
   }
 }

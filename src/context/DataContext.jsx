@@ -13,13 +13,18 @@ function Provider({ children }) {
   const [error, setError] = useState(false);
   const [allBrandNames, setAllBrandNames] = useState([]);
   const [allPrices, setAllPrices] = useState([]);
+  const [allProductNames, setAllProductNames] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isFilter, setIsFilter] = useState(false);
+  const [userWord, setUserWord] = useState("");
+
   // const [userChoice, setUserChoice] = useState([]);
+  const [clearFilter, setClearFilter] = useState(false);
 
   // get whole data
   const getToday = moment(new Date()).format("YYYYMMDD");
   const AUTH = md5(PASSWORD + "_" + getToday);
+
   const getData = async (currentPage = 1) => {
     setLoading(true);
     setError(false);
@@ -51,8 +56,9 @@ function Provider({ children }) {
       });
       const productsData = await resItems?.json();
       setAllData(productsData.result);
+      setFilteredData(productsData.result);
     } catch (err) {
-      alert(err);
+      console.log(err);
       setError(true);
     }
     setLoading(false);
@@ -128,6 +134,7 @@ function Provider({ children }) {
     // this two cares fieldName, setData
     getDataByField("brand", setAllBrandNames);
     getDataByField("price", setAllPrices);
+    getDataByField("product", setUserWord);
 
     //
   }, []);
@@ -146,6 +153,8 @@ function Provider({ children }) {
       : allData?.slice().sort((a, b) => b.price - a.price);
     isFilter ? setFilteredData(data) : setAllData(data);
   };
+
+  // т.к при reset мы возвращаем allData, нужно снова отправить  запрос в API чтобы получить данные (т.к. могут быть добавление новые элементы )
 
   const value = {
     getData,
@@ -169,6 +178,12 @@ function Provider({ children }) {
     setIsFilter,
     sortedByMaxToMin,
     sortedByMinToMax,
+    clearFilter,
+    setClearFilter,
+    allProductNames,
+    setAllProductNames,
+    userWord,
+    setUserWord,
   };
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
